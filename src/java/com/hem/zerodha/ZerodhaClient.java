@@ -1,5 +1,6 @@
 package com.hem.zerodha;
 
+import com.hem.zerodha.service.TradingPane;
 import com.hem.zerodha.service.ZerodhaService;
 import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 import javafx.application.Application;
@@ -19,13 +20,15 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import static com.hem.zerodha.service.ZerodhaService.login;
+
 
 public class ZerodhaClient extends Application {
 
-    static ZerodhaService zerodhaService = new ZerodhaService();
-
+    static Stage stage;
     @Override
     public void start(Stage primaryStage) throws IOException {
+        stage = primaryStage;
         GridPane grid = getLoginScreen();
 
         Scene scene = new Scene(grid, 300, 275);
@@ -62,8 +65,10 @@ public class ZerodhaClient extends Application {
         grid.add(actiontarget, 1, 6);
         btn.setOnAction(e -> {
             try {
-                zerodhaService.login(userTextField.getText());
+                login(userTextField.getText());
+                stage.getScene().setRoot(new TradingPane());
             }catch (Throwable ex) {
+                System.out.println("Failed to Login");
                 actiontarget.setFill(Color.FIREBRICK);
                 actiontarget.setText("Login Failed: " + ex.getMessage());
             }
